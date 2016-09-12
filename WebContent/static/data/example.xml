@@ -1,0 +1,6 @@
+
+<markers>
+ <marker lat="20.187457261520663" lng="85.80150604248047" html="Some stuff to display in the&lt;br&gt;First Info Window"  label="Marker One" />
+ <marker lat="20.258856087616163" lng="86.39328847412116" html="Some stuff to display in the&lt;br&gt;Second Info Window" label="Marker Two" />
+ <marker lat="20.233978484762098" lng="85.80682754516602" html="Some stuff to display in the&lt;br&gt;Third Info Window"  label="Marker Three" />
+</markers> 
