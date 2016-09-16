@@ -1,9 +1,0 @@
----
-applications:
-  - name: predix-smart-parking
-    buildpack: java_buildpack
-    path: target/parking-0.0.1-SNAPSHOT.jar
-    services:
-      - mypostgreservice-sapan
-env:
-    db_service_name: mypostgreservice-sapan
