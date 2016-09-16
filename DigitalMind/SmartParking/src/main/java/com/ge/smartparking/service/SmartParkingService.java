@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ge.smartparking.dto.DisplayDataDTO;
 import com.ge.smartparking.dto.ParkingAreaDTO;
 import com.ge.smartparking.dto.ParkingLocationDTO;
 import com.ge.smartparking.dto.SensorDTO;
@@ -41,6 +42,8 @@ public class SmartParkingService {
 	
 	@Autowired
 	private SensorDataRepo sensorDataRepo;
+	
+	private static Long prevlocId = null;
 
 
 	/**
@@ -99,7 +102,7 @@ public class SmartParkingService {
 	    	List<ParkingLocationDTO> parkingLocList = new ArrayList<ParkingLocationDTO>();
 			ParkingLocationDTO locDto = null;
 			System.out
-					.println("Sapan.................******");
+					.println("Bhanu.................******");
 					
 			try{
 				Double areaId =  Double.parseDouble(areaid);
@@ -183,12 +186,15 @@ public class SmartParkingService {
 	 */
 	@SuppressWarnings("nls")
 	@RequestMapping(value= "/parkinginfo/{areaName}" , method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody List<SensorDTO> getTimeseriesData(@PathVariable("areaName") String areaName){
+	public @ResponseBody List<DisplayDataDTO> getTimeseriesData(@PathVariable("areaName") String areaName){
     	SensorDTO sensorDto = null;
 		List<SensorDTO> sensorDTOList = new ArrayList<>();
-		System.out.println("SmartParkingService.getTimeseriesData():):)>:):):):)");
-		
+		System.out.println("SmartParkingService.getTimeseriesData():):)>:):):):)************8");
+		DisplayDataDTO displayDataDto = null;
+		List<DisplayDataDTO> displayList = new ArrayList<DisplayDataDTO>();
 		try{
+			Integer avilabilityStatusCount = 0;
+			
 			List<ParkingArea> parkingDetails = parkingAreaRepo.findByAreaName(areaName);
 			System.out.println("SmartParkingService.getTimeseriesData()******************");
 			if(null!=parkingDetails){
@@ -196,12 +202,15 @@ public class SmartParkingService {
 				List<ParkingLocation> locDetails = parkingDetails.get(0).getAreaParkingLocations();
 				for(ParkingLocation locDtls : locDetails){
 					long locId = locDtls.getLocId();
+					
 					List<SensorData> sensorList  = locDtls.getSensorData();
 					for(SensorData sensDataList : sensorList){
+						
 						sensorDto = new SensorDTO();
 						sensorDto.setSeqId(sensDataList.getSeqId());
 						sensorDto.setAreaId(areaId);
 						sensorDto.setLocId(locId);
+					
 						sensorDto.setAreaName(parkingDetails.get(0).getAreaName());
 						sensorDto.setArealatitude(parkingDetails.get(0).getLatitude());
 						sensorDto.setArealongitude(parkingDetails.get(0).getLongitude());
@@ -210,9 +219,24 @@ public class SmartParkingService {
 						sensorDto.setLocationlongitude(locDtls.getLongitude());
 						sensorDto.setTotalSlots(locDtls.getTotalSlots());
 						sensorDto.setType(locDtls.getType());
+						sensorDto.setTimestampPark(sensDataList.getTimestampPark());
+						
+						
+						sensorDto.setStatus(sensDataList.getStatus());
+						sensorDto.setAvilability(avilabilityStatusCount);
+						
+						
+						
 						sensorDTOList.add(sensorDto);
 						
 					}
+					displayDataDto = new DisplayDataDTO();
+					List<SensorData> dataList = sensorDataRepo.getDetails(locId);
+					displayDataDto.setAreaName(areaName);
+					displayDataDto.setLocName(locDtls.getLocName());
+					displayDataDto.setAvilableslots(dataList.size());
+					displayDataDto.setType(locDtls.getType());
+					displayList.add(displayDataDto);
 					
 				}
 				
@@ -221,7 +245,7 @@ public class SmartParkingService {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		return sensorDTOList;
+		return displayList;
 		
 		
 	}

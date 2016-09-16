@@ -1,6 +1,8 @@
 package com.ge.smartparking.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+
 import javax.persistence.*;
 
 
@@ -25,8 +27,8 @@ public class SensorData implements Serializable {
 
 	private String status;
 
-	@Column(name="TIMESTAMP_PARK")
-	private String timestampPark;
+	@Column(name="TIMESTAMP_PARK_NEW")
+	private Timestamp timestampPark;
 
 	//bi-directional many-to-one association to AreaParkingLocation
 	@ManyToOne
@@ -60,11 +62,19 @@ public class SensorData implements Serializable {
 		this.status = status;
 	}
 
-	public String getTimestampPark() {
+	
+
+	/**
+	 * @return the timestampPark
+	 */
+	public Timestamp getTimestampPark() {
 		return this.timestampPark;
 	}
 
-	public void setTimestampPark(String timestampPark) {
+	/**
+	 * @param timestampPark the timestampPark to set
+	 */
+	public void setTimestampPark(Timestamp timestampPark) {
 		this.timestampPark = timestampPark;
 	}
 

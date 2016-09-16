@@ -15,8 +15,8 @@ package com.ge.smartparking.dto;
  * @author predix -
  */
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
-import javax.persistence.Column;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /*
@@ -41,8 +41,6 @@ public class SensorDTO {
 	private String parkingSlots;
 
 	private String status;
-
-	private String timestampPark;
 	
 	private long areaId;
 	
@@ -63,9 +61,27 @@ public class SensorDTO {
 	private String type;
 	
 	private String locName;
+	
+	private Timestamp timestampPark;
+	
+	private Integer avilability;
 
 	
  
+
+	/**
+	 * @return the avilability
+	 */
+	public Integer getAvilability() {
+		return this.avilability;
+	}
+
+	/**
+	 * @param avilability the avilability to set
+	 */
+	public void setAvilability(Integer avilability) {
+		this.avilability = avilability;
+	}
 
 	/**
 	 * @return the seqId
@@ -109,20 +125,7 @@ public class SensorDTO {
 		this.status = status;
 	}
 
-	/**
-	 * @return the timestampPark
-	 */
-	public String getTimestampPark() {
-		return this.timestampPark;
-	}
-
-	/**
-	 * @param timestampPark the timestampPark to set
-	 */
-	public void setTimestampPark(String timestampPark) {
-		this.timestampPark = timestampPark;
-	}
-
+	
 	/**
 	 * @return the areaId
 	 */
@@ -261,6 +264,20 @@ public class SensorDTO {
 	 */
 	public void setLocName(String locName) {
 		this.locName = locName;
+	}
+
+	/**
+	 * @return the timestampPark
+	 */
+	public Timestamp getTimestampPark() {
+		return this.timestampPark;
+	}
+
+	/**
+	 * @param timestampPark the timestampPark to set
+	 */
+	public void setTimestampPark(Timestamp timestampPark) {
+		this.timestampPark = timestampPark;
 	}
 	
 }

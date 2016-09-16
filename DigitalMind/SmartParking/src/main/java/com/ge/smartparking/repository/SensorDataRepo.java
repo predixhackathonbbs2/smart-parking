@@ -11,6 +11,7 @@
 package com.ge.smartparking.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import com.ge.smartparking.entity.SensorData;
 import com.ge.smartparking.entity.ParkingLocation;
@@ -22,9 +23,20 @@ import java.util.List;
  */
 public interface SensorDataRepo extends JpaRepository<SensorData, Long>{
 	
+	//SELECT s  FROM sensor_data s,area_parking_location p where s.loc_Id = p.loc_Id and s.status ='A' and p.loc_Id=1001
+
+	String GET_RESULT = "SELECT  s FROM SensorData s,ParkingLocation p where s.areaParkingLocation.locId = p.locId and s.status = 'A' and p.locId=?1 ";
+
+	/**
+	 * @param locId
+	 * @return -
+	 */
+	@Query(GET_RESULT)
+	List<SensorData> getDetails(long locId);
+	
 
 	/*List<SensorData> findByAreaId()*/
 	
-
+	
  	
 }
