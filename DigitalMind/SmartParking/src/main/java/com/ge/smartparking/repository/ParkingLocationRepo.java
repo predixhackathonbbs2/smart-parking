@@ -16,33 +16,25 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.ge.smartparking.entity.ParkingArea;
+import com.ge.smartparking.entity.ParkingLocation;
+
 import java.lang.String;
+import java.math.BigDecimal;
 
 /**
  * 
  * @author predix -
  */
-public interface ParkingAreaRepo extends JpaRepository<ParkingArea, Long>{
+public interface ParkingLocationRepo extends JpaRepository<ParkingLocation, Long>{
 
 	/**
 	 * 
 	 */
-	String GET_PARKING_ZONE_DETAILS_BY_LAT_LONG = "select a.areaId as areaId,a.areaName as areaName,a.latitude as latitude,a.longitude as longitude from ParkingArea a where a.latitude>=?1 and a.longitude>=?2";
-	/**
-	 * @param latitude 
-	 * @param longitude 
-	 * @param l 
-	 * @param m 
-	 * @param lat
-	 * @param lon
-	 * @return -
-	 */
-	@Query(GET_PARKING_ZONE_DETAILS_BY_LAT_LONG)
-	List<Object[]> findParkingAreasByLongitudeAndLatitude(double latitude,
-			double longitude);
 	
 	
-	List<ParkingArea> findByAreaName(String areaname);
+	
+	
+	List<ParkingLocation> findByLocId(long locId);
 	
 	
 

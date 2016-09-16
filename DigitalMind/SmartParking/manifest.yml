@@ -1,6 +1,6 @@
 ---
 applications:
-  - name: predix-smart-parking-new
+  - name: predix-smart-parking-latest
     buildpack: java_buildpack
     path: target/parking-0.0.1-SNAPSHOT.jar
     services:

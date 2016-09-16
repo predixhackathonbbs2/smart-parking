@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -15,9 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ge.smartparking.dto.ParkingAreaDTO;
 import com.ge.smartparking.dto.ParkingLocationDTO;
+import com.ge.smartparking.dto.SensorDTO;
 import com.ge.smartparking.entity.ParkingArea;
 import com.ge.smartparking.entity.ParkingLocation;
+import com.ge.smartparking.entity.SensorData;
 import com.ge.smartparking.repository.ParkingAreaRepo;
+import com.ge.smartparking.repository.ParkingLocationRepo;
+import com.ge.smartparking.repository.SensorDataRepo;
 
 
 /**
@@ -29,6 +35,12 @@ public class SmartParkingService {
 	
 	@Autowired
 	private ParkingAreaRepo parkingAreaRepo;
+	
+	@Autowired 
+	private ParkingLocationRepo parkingLocationRepo;
+	
+	@Autowired
+	private SensorDataRepo sensorDataRepo;
 
 
 	/**
@@ -87,7 +99,7 @@ public class SmartParkingService {
 	    	List<ParkingLocationDTO> parkingLocList = new ArrayList<ParkingLocationDTO>();
 			ParkingLocationDTO locDto = null;
 			System.out
-					.println("SmartParkingService.findParkingLocationByZoneId()");
+					.println("Sapan.................******");
 					
 			try{
 				Double areaId =  Double.parseDouble(areaid);
@@ -133,6 +145,87 @@ public class SmartParkingService {
 	    	
 	    }
 	
+	
+	@RequestMapping("/scheduleUpdate")
+	public String scheduleUpdate(){
+		System.out.println("ShopVisitServiceImpl.scheduleUpdate()");
+		final String result = "Hello Thread";
+		try{
+			Timer timer = new Timer();
+			timer.schedule( new TimerTask() {
+			    public void run() {
+			    	/*final SchedulerVO schedulerVO =  new SchedulerVO();
+			    	schedulerVO.setStatus("Scheduler Staretd.....");*/
+			    	System.out
+							.println(result);
+			    
+			    	//schedulerVOs.add(schedulerVO);
+			 
+			    }
+			 }, 0, 30*100);
+			 //timer.cancel();
+		}
+			catch(Exception e){
+				System.out.println(e);
+			}
+			return result;
+	}
+	
+	
+	public int getRandomInteger(int maximum, int minimum) {
+		return ((int) (Math.random() * (maximum - minimum))) + minimum;
+	}
+	
+	
+	/**
+	 * @param areaName
+	 * @return -
+	 */
+	@SuppressWarnings("nls")
+	@RequestMapping(value= "/parkinginfo/{areaName}" , method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody List<SensorDTO> getTimeseriesData(@PathVariable("areaName") String areaName){
+    	SensorDTO sensorDto = null;
+		List<SensorDTO> sensorDTOList = new ArrayList<>();
+		System.out.println("SmartParkingService.getTimeseriesData():):)>:):):):)");
+		
+		try{
+			List<ParkingArea> parkingDetails = parkingAreaRepo.findByAreaName(areaName);
+			System.out.println("SmartParkingService.getTimeseriesData()******************");
+			if(null!=parkingDetails){
+				long areaId = parkingDetails.get(0).getAreaId();
+				List<ParkingLocation> locDetails = parkingDetails.get(0).getAreaParkingLocations();
+				for(ParkingLocation locDtls : locDetails){
+					long locId = locDtls.getLocId();
+					List<SensorData> sensorList  = locDtls.getSensorData();
+					for(SensorData sensDataList : sensorList){
+						sensorDto = new SensorDTO();
+						sensorDto.setSeqId(sensDataList.getSeqId());
+						sensorDto.setAreaId(areaId);
+						sensorDto.setLocId(locId);
+						sensorDto.setAreaName(parkingDetails.get(0).getAreaName());
+						sensorDto.setArealatitude(parkingDetails.get(0).getLatitude());
+						sensorDto.setArealongitude(parkingDetails.get(0).getLongitude());
+						sensorDto.setLocName(locDtls.getLocName());
+						sensorDto.setLocationlatitude(locDtls.getLatitude());
+						sensorDto.setLocationlongitude(locDtls.getLongitude());
+						sensorDto.setTotalSlots(locDtls.getTotalSlots());
+						sensorDto.setType(locDtls.getType());
+						sensorDTOList.add(sensorDto);
+						
+					}
+					
+				}
+				
+			}
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return sensorDTOList;
+		
+		
+	}
+		
 	
 
 }
