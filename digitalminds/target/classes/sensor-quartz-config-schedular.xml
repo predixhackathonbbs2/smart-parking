@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="parkingSensorDataGeneratorTask" class="com.ge.smartparking.schedular.job.ParkingSensorDataGeneratorTask" />
+	
+	<!-- <bean id="locationDataGeneratorTask" class="com.ge.smartparking.schedular.job.LocationDataGeneratorTask" /> -->
+
+	<!-- Spring Quartz -->
+	<bean name="parkingSensorDataGeneratorJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+
+		<property name="jobClass" value="com.ge.smartparking.schedular.job.ParkingSensorDataGeneratorJob" />
+
+		<property name="jobDataAsMap">
+			<map>
+				<entry key="parkingSensorDataGeneratorTask" value-ref="parkingSensorDataGeneratorTask" />
+			</map>
+		</property>
+
+	</bean>
+	<!-- <bean name="locationDataGeneratorJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+
+		<property name="jobClass" value="com.ge.smartparking.schedular.job.LocationDataGeneratorJob" />
+
+		<property name="jobDataAsMap">
+			<map>
+				<entry key="locationDataGeneratorTask" value-ref="locationDataGeneratorTask" />
+			</map>
+		</property>
+
+	</bean> -->
+
+
+	<!-- Simple Trigger, run every 2 minutes -->
+	<bean id="parkingTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+
+		<property name="jobDetail" ref="parkingSensorDataGeneratorJob" />
+		<property name="repeatInterval" value="25000" />
+		<property name="startDelay" value="10000" />
+
+	</bean>
+	
+	<!-- <bean id="locationTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+
+		<property name="jobDetail" ref="locationDataGeneratorJob" />
+		<property name="repeatInterval" value="5000" />
+		<property name="startDelay" value="1000" />
+
+	</bean> -->
+
+	 <!-- Cron Trigger, run every 5 seconds
+	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+
+		<property name="jobDetail" ref="sensorDataGeneratorJob" />
+		<property name="cronExpression" value="0/5 * * * * ?" />
+
+	</bean> -->
+
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="jobDetails">
+			<list>
+				<ref bean="parkingSensorDataGeneratorJob" />
+			</list>
+		</property>
+
+		<property name="triggers">
+			<list>
+				<ref bean="parkingTrigger" />
+			</list>
+		</property>
+	</bean>
+</beans>
