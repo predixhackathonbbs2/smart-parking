@@ -1,6 +1,7 @@
 package com.ge.smartparking.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,12 +17,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ge.smartparking.dto.DisplayDataDTO;
+import com.ge.smartparking.dto.EventDTO;
 import com.ge.smartparking.dto.ParkingAreaDTO;
 import com.ge.smartparking.dto.ParkingLocationDTO;
 import com.ge.smartparking.dto.SensorDTO;
+import com.ge.smartparking.entity.Event;
 import com.ge.smartparking.entity.ParkingArea;
 import com.ge.smartparking.entity.ParkingLocation;
 import com.ge.smartparking.entity.SensorData;
+import com.ge.smartparking.repository.EventRepo;
 import com.ge.smartparking.repository.ParkingAreaRepo;
 import com.ge.smartparking.repository.ParkingLocationRepo;
 import com.ge.smartparking.repository.SensorDataRepo;
@@ -44,6 +48,9 @@ public class SmartParkingService {
 	private SensorDataRepo sensorDataRepo;
 	
 	private static Long prevlocId = null;
+	
+	@Autowired
+	private EventRepo eventRepo;
 
 
 	/**
@@ -189,7 +196,7 @@ public class SmartParkingService {
 	public @ResponseBody List<DisplayDataDTO> getTimeseriesData(@PathVariable("areaName") String areaName){
     	SensorDTO sensorDto = null;
 		List<SensorDTO> sensorDTOList = new ArrayList<>();
-		System.out.println("SmartParkingService.getTimeseriesData():):)>:):):):)************8");
+		System.out.println("SmartParkingService.getTimeseriesData():):)>:):):):)************888888888888888");
 		DisplayDataDTO displayDataDto = null;
 		List<DisplayDataDTO> displayList = new ArrayList<DisplayDataDTO>();
 		try{
@@ -247,6 +254,36 @@ public class SmartParkingService {
 		}
 		return displayList;
 		
+		
+	}
+	@SuppressWarnings("nls")
+	@RequestMapping(value= "/eventinfo/{areaName}" , method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody String getEventDetails(@PathVariable("areaName") String areaName){
+		
+		EventDTO eventDto = null;
+		List<EventDTO> eventList = new ArrayList<EventDTO>();
+		Date date = new Date();
+		String messgae = null;
+		try{
+			List<Event>	eventLists = eventRepo.findByAreaName(areaName, date);
+			for(Event eventLs : eventLists){
+				eventDto = new EventDTO();
+				eventDto.setEventArea(eventLs.getAreaName());
+				eventDto.setEventDate(eventLs.getEventDate());
+				eventDto.setEventDescription(eventLs.getEventName());
+				eventDto.setEventLoc(eventLs.getLocName());
+				messgae = "There will be a heavy rush in the area you are visiting today\n" + "We recommend you to avail Public transport or car "
+						+ "pooling.\n" + "Event Name : " +   eventLs.getEventName() + "\n"
+						+ "Event Location : "+ eventLs.getLocName() +" , " + eventLs.getAreaName();
+				eventDto.setMessage(messgae);
+				
+				
+			}
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return messgae;
 		
 	}
 		
